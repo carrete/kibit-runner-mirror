@@ -1,0 +1,6 @@
+.cpcache/
+.eastwood
+.lein-*
+.nrepl-*
+dist/
+target/

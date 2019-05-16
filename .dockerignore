@@ -1,0 +1,6 @@
+kibit-runner/.cpcache/
+kibit-runner/.eastwood
+kibit-runner/.lein-*
+kibit-runner/.nrepl-*
+kibit-runner/dist/
+kibit-runner/target/

@@ -1,0 +1,23 @@
+image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
+
+services:
+  - docker:dind
+
+stages:
+  - push
+  - trigger
+
+push:
+  stage: push
+  script:
+    - make lint
+    - make test
+    - make push
+
+trigger:
+  stage: trigger
+  script:
+    - |
+      for TRIGGER in $(echo $TRIGGERS | tr [:space:] ' '); do
+        curl -fs -X POST -F ref=master -F token=${TRIGGER#*:} https://gitlab.com/api/v4/projects/${TRIGGER%:*}/trigger/pipeline > /dev/null
+      done
