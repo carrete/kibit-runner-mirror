@@ -35,6 +35,6 @@ Caveat Emptor
 
 I came across https://github.com/jonase/kibit/issues/221 as I was replacing
 leiningen with deps.edn and the clojure command-line tools in
-[gitlab-api](https://gitlab.com/tvaughan/docker-gitlab-api). While this
-library appears to do the trick, it would be better to incorporate it into
-kibit itself. Fingers crossed, this library will disappear someday.
+[gitlab-api](https://gitlab.com/tvaughan/gitlab-api). While this library
+appears to do the trick, it would be better to incorporate it into kibit
+itself. Fingers crossed, this library will disappear someday.
