@@ -6,6 +6,7 @@
                                lambdaisland/kaocha-cloverage {:mvn/version "0.0-32"}
                                org.clojure/test.check {:mvn/version "0.9.0"}
                                kaocha-noyoda {:mvn/version "2019-06-03"}}
+                  :extra-paths ["test"]
                   :main-opts ["-m" "kaocha.runner"]}
            :slamhound {:extra-deps {slamhound {:mvn/version "1.5.5"}}
                        :main-opts ["-m" "slam.hound"]}

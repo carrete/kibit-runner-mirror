@@ -28,23 +28,23 @@ shell: build
 
 .PHONY: repl
 repl: build
-	@clojure -A:$@ --interactive --bind 0.0.0.0 --port 5309
+	@clojure -C:test -R:test -A:$@ --interactive --bind 0.0.0.0 --port 5309
 
 .PHONY: check-format format
 check-format format: build
-	@clojure -A:cljfmt:$@
+	@clojure -C:test -R:test -A:cljfmt:$@
 
 .PHONY: bikeshed
 bikeshed: build
-	@clojure -A:$@ -e "(System/exit 0)"  # TODO:
+	@clojure -C:test -R:test -A:$@ -e "(System/exit 0)"  # TODO:
 
 .PHONY: eastwood
 eastwood: build
-	@clojure -A:$@ '{:source-paths ["src"] :test-paths ["test"]}'
+	@clojure -C:test -R:test -A:$@ '{:source-paths ["src"] :test-paths ["test"]}'
 
 .PHONY: kibit
 kibit: build
-	@clojure -A:$@
+	@clojure -C:test -R:test -A:$@
 
 .PHONY: lint
 lint: check-format bikeshed eastwood kibit
