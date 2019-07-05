@@ -1,4 +1,5 @@
-{:deps {jonase/kibit {:mvn/version "0.1.6"}}
+{:deps {jonase/kibit {:mvn/version "0.1.6"}
+        org.clojure/data.csv {:mvn/version "0.1.4"}}
  :paths ["src"]
  :aliases {:repl {:extra-deps {nrepl/nrepl {:mvn/version "0.6.0"}}
                   :main-opts ["-m" "nrepl.cmdline"]}

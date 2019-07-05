@@ -1,12 +1,16 @@
 (ns kibit-runner.utils
-  (:require [clojure.java.io :as java-io]
+  (:require [clojure.data.csv :as csv]
+            [clojure.java.io :as java-io]
             [clojure.spec.alpha :as spec]
             [clojure.string :as string])
   (:import java.io.File))
 
 (defn parse-paths
   [paths]
-  (map java-io/file (string/split paths #",")))
+  (if paths
+    (let [split-paths (or (first (csv/read-csv paths)) [""])]
+      (map java-io/file split-paths))
+    []))
 
 (spec/fdef parse-paths
            :args (spec/cat :paths string?)
