@@ -1,10 +1,16 @@
 (ns kibit-runner.utils
   (:require [clojure.java.io :as java-io]
-            [clojure.string :as string]))
+            [clojure.spec.alpha :as spec]
+            [clojure.string :as string])
+  (:import java.io.File))
 
 (defn parse-paths
   [paths]
   (map java-io/file (string/split paths #",")))
+
+(spec/fdef parse-paths
+           :args (spec/cat :paths string?)
+           :ret (spec/coll-of #(instance? File %) :kind seq? :min-count 0))
 
 (defn validate-paths
   [paths]

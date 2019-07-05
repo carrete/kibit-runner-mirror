@@ -1,5 +1,6 @@
 (ns kibit-runner.utils-test
-  (:require [clojure.string :as string]
+  (:require [clojure.spec.test.alpha :as spec-test]
+            [clojure.string :as string]
             [clojure.test :refer :all]
             [clojure.test.check :as test-check]
             [clojure.test.check.generators :as gen]
@@ -14,3 +15,6 @@
                 (= (map #(.getName %) (utils/parse-paths (string/join "," paths))) paths)))
 
 (test-check/quick-check 100 check-parse-paths)
+
+(spec-test/instrument `utils/parse-paths)
+(spec-test/check `utils/parse-paths)
