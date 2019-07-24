@@ -16,6 +16,11 @@
       <artifactId>kibit</artifactId>
       <version>0.1.6</version>
     </dependency>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>data.csv</artifactId>
+      <version>0.1.4</version>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
