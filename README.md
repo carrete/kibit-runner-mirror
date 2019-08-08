@@ -5,7 +5,7 @@ Quick Start
 
 Add:
 
-    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "0.2.0"}}
+    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "0.2.1"}}
             :main-opts ["-m" "kibit-runner.cmdline"]}
 
 to `:aliases` in `deps.edn`.
