@@ -6,10 +6,10 @@ DOCKER_REGISTRY = registry.gitlab.com
 FULL_IMAGE_PATH = $(DOCKER_REGISTRY)/tvaughan/kibit-runner
 
 GIT_REVISION = $(shell git rev-parse --short HEAD)
-SYMBOLIC_TAG = $(shell bash symbolic-tag)
+SYMBOLIC_REF = $(shell git rev-parse --abbrev-ref HEAD)
 
 EXPLICIT_IMAGE = $(FULL_IMAGE_PATH):$(GIT_REVISION)
-SYMBOLIC_IMAGE = $(FULL_IMAGE_PATH):$(SYMBOLIC_TAG)
+SYMBOLIC_IMAGE = $(FULL_IMAGE_PATH):$(SYMBOLIC_REF)
 
 .PHONY: all
 all: lint test
