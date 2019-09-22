@@ -3,6 +3,9 @@ image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
 services:
   - docker:dind
 
+variables:
+  GITLAB_USERNAME: gitlab-ci-token
+
 stages:
   - push
   - trigger
@@ -10,9 +13,11 @@ stages:
 push:
   stage: push
   script:
-    - make lint
-    - make test
-    - make push
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export GITLAB_PASSWORD=$CI_BUILD_TOKEN
+      make lint
+      make test
+      make push
 
 trigger:
   stage: trigger
