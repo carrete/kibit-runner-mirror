@@ -13,8 +13,8 @@
     []))
 
 (spec/fdef parse-paths
-           :args (spec/cat :paths string?)
-           :ret (spec/coll-of #(instance? File %) :kind seq? :min-count 0))
+  :args (spec/cat :paths string?)
+  :ret (spec/coll-of #(instance? File %) :kind seq? :min-count 0))
 
 (defn validate-paths
   [paths]
