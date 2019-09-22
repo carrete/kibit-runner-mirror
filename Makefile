@@ -59,10 +59,8 @@ push: tag-image
 	@docker push $(FULL_IMAGE_PATH)
 
 .PHONY: gitlab-runner-%
-gitlab-runner-%: is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD is-defined-GITLAB_USERNAME is-defined-GITLAB_PASSWORD
+gitlab-runner-%: is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
 	@gitlab-runner exec docker --docker-privileged				\
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"			\
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"			\
-	    --env GITLAB_USERNAME="$(GITLAB_USERNAME)"				\
-	    --env GITLAB_PASSWORD="$(GITLAB_PASSWORD)"				\
 	    $*
