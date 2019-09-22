@@ -1,2 +1,1 @@
-;;; .dir-locals.el ---
-((nil . ((cider-clojure-cli-global-options . "-C:repl:test -R:repl:test"))))
+((nil . ((cider-clojure-cli-parameters . "-C:test -R:test -A:repl --middleware '%s'"))))
