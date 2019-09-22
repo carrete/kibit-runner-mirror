@@ -44,7 +44,6 @@ slamhound: is-in-container
 
 .PHONY: compile
 compile: is-in-container
-	@mkdir -p dist
 	@clojure -A:$@ dist/kibit-runner.jar
 
 .PHONY: publish

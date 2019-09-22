@@ -2,5 +2,4 @@
 .eastwood
 .lein-*
 .nrepl-*
-dist/
 target/
