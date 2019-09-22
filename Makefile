@@ -18,29 +18,31 @@ all: lint test
 is-defined-%:
 	@$(if $(value $*),,$(error The environment variable $* is undefined))
 
+.PHONY: login
+login: is-defined-GITLAB_USERNAME is-defined-GITLAB_PASSWORD
+	@echo "$(GITLAB_PASSWORD)" | docker login --username "$(GITLAB_USERNAME)" --password-stdin $(DOCKER_REGISTRY)
+
 .PHONY: build
-build:
+build: login
 	@docker build --pull --tag $(EXPLICIT_IMAGE) .
 
 .PHONY: lint test
 lint test: build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
-	@docker run --rm --name localhost					\
+	@docker run --rm							\
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"			\
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"			\
 	    --mount type=volume,src=kibit-runner-deps,dst=/root/.m2		\
-	    --publish 5309:5309							\
             $(EXPLICIT_IMAGE)							\
 	    make $@
 
 .PHONY: repl shell
 repl shell: build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
-	@docker run --rm --name localhost					\
+	@docker run --rm --interactive --tty --name localhost			\
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"			\
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"			\
+	    --mount type=bind,src="$(PWD)"/kibit-runner,dst=/opt/kibit-runner	\
 	    --mount type=volume,src=kibit-runner-deps,dst=/root/.m2		\
 	    --publish 5309:5309							\
-	    --interactive --tty							\
-	    --mount type=bind,src="$(PWD)"/kibit-runner,dst=/opt/kibit-runner	\
             $(EXPLICIT_IMAGE)							\
 	    make $@
 
@@ -52,12 +54,8 @@ is-repo-clean:
 tag-image: is-repo-clean build
 	@docker tag $(EXPLICIT_IMAGE) $(SYMBOLIC_IMAGE)
 
-.PHONY: login
-login: is-defined-GITLAB_USERNAME is-defined-GITLAB_PASSWORD
-	@echo "$(GITLAB_PASSWORD)" | docker login --username "$(GITLAB_USERNAME)" --password-stdin $(DOCKER_REGISTRY)
-
 .PHONY: push
-push: tag-image login
+push: tag-image
 	@docker push $(FULL_IMAGE_PATH)
 
 .PHONY: gitlab-runner-%

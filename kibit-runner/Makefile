@@ -19,46 +19,31 @@ endef
 is-in-container:
 	@$(if $(wildcard /.docker*),,$(error $(CONTAINER_REQUIRED_MESSAGE)))
 
-.PHONY: build
-build: is-in-container
-
 .PHONY: shell
-shell: build
+shell: is-in-container
 	@bash --login
 
-.PHONY: repl
-repl: build
-	@clojure -C:test -R:test -A:$@ --interactive --bind 0.0.0.0 --port 5309
-
-.PHONY: check-format format
-check-format format: build
-	@clojure -C:test -R:test -A:cljfmt:$@
-
-.PHONY: bikeshed
-bikeshed: build
-	@clojure -C:test -R:test -A:$@ -e "(System/exit 0)"  # TODO:
-
-.PHONY: eastwood
-eastwood: build
-	@clojure -C:test -R:test -A:$@ '{:source-paths ["src"] :test-paths ["test"]}'
-
-.PHONY: kibit
-kibit: build
+.PHONY: repl check-refactor refactor bikeshed eastwood
+repl check-refactor refactor bikeshed eastwood: is-in-container
 	@clojure -C:test -R:test -A:$@
 
+.PHONY: check-format format
+check-format format: is-in-container
+	@clojure -C:test -R:test -A:cljfmt:$@ .
+
 .PHONY: lint
-lint: check-format bikeshed eastwood kibit
+lint: check-format check-refactor bikeshed eastwood
 
 .PHONY: test
-test: build
+test: is-in-container
 	@clojure -A:$@
 
 .PHONY: slamhound
-slamhound: build
+slamhound: is-in-container
 	@clojure -A:$@ .
 
 .PHONY: compile
-compile: build
+compile: is-in-container
 	@mkdir -p dist
 	@clojure -A:$@ dist/kibit-runner.jar
 
@@ -67,9 +52,9 @@ publish: compile is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
 	@clojure -A:$@ deploy dist/kibit-runner.jar
 
 .PHONY: update-deps
-update-deps: build
-	@clojure -A:outdated -a outdated,repl,cljfmt,bikeshed,eastwood,kibit,test,slamhound,compile,publish --update
+update-deps: is-in-container
+	@clojure -A:outdated -a outdated,repl,cljfmt,bikeshed,eastwood,test,slamhound,compile,publish --update
 
 .PHONY: pprint
-pprint: build
+pprint: is-in-container
 	@clojure -Stree

@@ -2,7 +2,7 @@
         org.clojure/data.csv {:mvn/version "0.1.4"}}
  :paths ["src"]
  :aliases {:repl {:extra-deps {nrepl/nrepl {:mvn/version "0.6.0"}}
-                  :main-opts ["-m" "nrepl.cmdline"]}
+                  :main-opts ["-m" "nrepl.cmdline" "--interactive" "--bind" "0.0.0.0" "--port" "5309"]}
            :test {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-529"}
                                lambdaisland/kaocha-cloverage {:mvn/version "0.0-32"}
                                org.clojure/test.check {:mvn/version "0.9.0"}
@@ -11,15 +11,15 @@
                   :main-opts ["-m" "kaocha.runner"]}
            :slamhound {:extra-deps {slamhound {:mvn/version "1.5.5"}}
                        :main-opts ["-m" "slam.hound"]}
-           :cljfmt {:extra-deps {com.jameslaverack/cljfmt-runner
-                                 {:git/url "https://github.com/JamesLaverack/cljfmt-runner"
-                                  :sha "d6952345b3047e03ca3a88f89a1433c109b7b442"}}}
-           :check-format {:main-opts ["-m" "cljfmt-runner.check"]}
-           :format {:main-opts ["-m" "cljfmt-runner.fix"]}
-           :bikeshed {#_"TODO:"}
-           :kibit {:main-opts ["-m" "kibit-runner.cmdline"]}
+           :cljfmt {:extra-deps {cljfmt {:mvn/version "0.6.4"}}}
+           :check-format {:main-opts ["-m" "cljfmt.main" "check"]}
+           :format {:main-opts ["-m" "cljfmt.main" "fix"]}
+           :check-refactor {:main-opts ["-m" "kibit-runner.cmdline"]}
+           :refactor {:main-opts ["-m" "kibit-runner.cmdline" "--" "--replace"]}
+           :bikeshed {:extra-deps {tvaughan/bikeshed-runner {:mvn/version "0.2.1"}}
+                      :main-opts ["-m" "bikeshed-runner.cmdline"]}
            :eastwood {:extra-deps {jonase/eastwood {:mvn/version "0.3.5"}}
-                      :main-opts ["-m" "eastwood.lint"]}
+                      :main-opts ["-m" "eastwood.lint" {:source-paths ["src"] :test-paths ["test"]}]}
            :outdated {:extra-deps {olical/depot {:mvn/version "1.8.2"}}
                       :main-opts ["-m" "depot.outdated.main"]}
            :compile {:extra-deps {seancorfield/depstar {:mvn/version "0.2.1"}}
