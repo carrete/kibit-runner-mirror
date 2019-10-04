@@ -3,8 +3,8 @@
  :paths ["src"]
  :aliases {:repl {:extra-deps {nrepl/nrepl {:mvn/version "0.6.0"}}
                   :main-opts ["-m" "nrepl.cmdline" "--interactive" "--bind" "0.0.0.0" "--port" "5309"]}
-           :test {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-541"}
-                               lambdaisland/kaocha-cloverage {:mvn/version "0.0-32"}
+           :test {:extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}
+                               lambdaisland/kaocha-cloverage {:mvn/version "0.0-41"}
                                org.clojure/test.check {:mvn/version "0.10.0"}
                                kaocha-noyoda {:mvn/version "2019-06-03"}}
                   :extra-paths ["test"]
