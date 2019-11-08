@@ -23,8 +23,8 @@ is-in-container:
 shell: is-in-container
 	@bash --login
 
-.PHONY: repl check-refactor refactor bikeshed eastwood
-repl check-refactor refactor bikeshed eastwood: is-in-container
+.PHONY: repl check-refactor refactor bikeshed eastwood clj-kondo
+repl check-refactor refactor bikeshed eastwood clj-kondo: is-in-container
 	@clojure -C:test -R:test -A:$@
 
 .PHONY: check-format format
@@ -32,7 +32,7 @@ check-format format: is-in-container
 	@clojure -C:test -R:test -A:cljfmt:$@ .
 
 .PHONY: lint
-lint: check-format check-refactor bikeshed eastwood
+lint: check-format check-refactor bikeshed eastwood clj-kondo
 
 .PHONY: test
 test: is-in-container
@@ -52,7 +52,7 @@ publish: compile is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
 
 .PHONY: update-deps
 update-deps: is-in-container
-	@clojure -A:outdated -a outdated,repl,cljfmt,bikeshed,eastwood,test,slamhound,compile,publish --update
+	@clojure -A:outdated -a outdated,repl,cljfmt,bikeshed,eastwood,clj-kondo,test,slamhound,compile,publish --update
 
 .PHONY: pprint
 pprint: is-in-container
