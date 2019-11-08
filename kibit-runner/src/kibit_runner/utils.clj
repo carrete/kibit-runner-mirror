@@ -1,8 +1,7 @@
 (ns kibit-runner.utils
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as java-io]
-            [clojure.spec.alpha :as spec]
-            [clojure.string :as string])
+            [clojure.spec.alpha :as spec])
   (:import java.io.File))
 
 (defn parse-paths

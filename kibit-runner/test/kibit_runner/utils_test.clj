@@ -1,7 +1,7 @@
 (ns kibit-runner.utils-test
   (:require [clojure.spec.test.alpha :as spec-test]
             [clojure.string :as string]
-            [clojure.test :refer :all]
+            [clojure.test :refer [deftest is]]
             [clojure.test.check :as test-check]
             [clojure.test.check.generators :as gen]
             [clojure.test.check.properties :as prop :include-macros true]
