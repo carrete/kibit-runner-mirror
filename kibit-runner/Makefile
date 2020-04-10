@@ -1,6 +1,11 @@
-# -*- coding: utf-8; mode: make; -*-
+# -*- coding: utf-8; mode: makefile-gmake; -*-
 
-SHELL = bash
+MAKEFLAGS += --warn-undefined-variables
+
+SHELL := bash
+.SHELLFLAGS := $(or ${SHELLFLAGS},${SHELLFLAGS},-euo pipefail -c)
+
+HERE := $(shell cd -P -- $(shell dirname -- $$0) && pwd -P)
 
 .PHONY: all
 all: lint test
@@ -23,27 +28,23 @@ is-in-container:
 shell: is-in-container
 	@bash --login
 
-.PHONY: repl check-refactor refactor bikeshed eastwood clj-kondo
-repl check-refactor refactor bikeshed eastwood clj-kondo: is-in-container
-	@clojure -C:test -R:test -A:$@
+.PHONY: repl test check-format format check-refactor refactor eastwood kondo
+repl test check-format format check-refactor refactor eastwood kondo: is-in-container
+	@clojure -A:test:cljstyle:$@
 
-.PHONY: check-format format
-check-format format: is-in-container
-	@clojure -C:test -R:test -A:cljfmt:$@ .
+.PHONY: joker
+joker: is-in-container
+	@joker --lint --working-dir .
 
 .PHONY: lint
-lint: check-format check-refactor bikeshed eastwood clj-kondo
+lint: check-format check-refactor eastwood kondo joker
 
-.PHONY: test
-test: is-in-container
-	@clojure -A:$@
-
-.PHONY: slamhound
-slamhound: is-in-container
-	@clojure -A:$@ .
+.PHONY: bump-pom
+bump-pom: is-in-container
+	@clojure -Spom
 
 .PHONY: compile
-compile: is-in-container
+compile: bump-pom
 	@clojure -A:$@ dist/kibit-runner.jar
 
 .PHONY: publish
@@ -52,7 +53,7 @@ publish: compile is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
 
 .PHONY: update-deps
 update-deps: is-in-container
-	@clojure -A:outdated -a outdated,repl,cljfmt,bikeshed,eastwood,clj-kondo,test,slamhound,compile,publish --update
+	@clojure -A:outdated --update
 
 .PHONY: pprint
 pprint: is-in-container

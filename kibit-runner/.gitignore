@@ -1,5 +1,4 @@
 .cpcache/
 .eastwood
-.lein-*
 .nrepl-*
 target/

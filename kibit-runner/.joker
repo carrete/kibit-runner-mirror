@@ -1,0 +1,2 @@
+{:known-macros
+ [clojure.test.check.properties/for-all]}

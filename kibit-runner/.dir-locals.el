@@ -1,1 +1,2 @@
-((nil . ((cider-clojure-cli-parameters . "-C:test -R:test -A:repl --middleware '%s'"))))
+((nil . ((cider-clojure-cli-global-options . "-A:test:repl")
+         (cider-preferred-build-tool . clojure-cli))))

@@ -7,22 +7,20 @@ variables:
   GITLAB_USERNAME: gitlab-ci-token
 
 stages:
+  - check
   - push
-  - trigger
+
+check:
+  stage: check
+  script:
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export GITLAB_PASSWORD=$CI_BUILD_TOKEN
+      make lint
+      make test
 
 push:
   stage: push
   script:
     - | # TODO: Cannot use GitLab CI variables in `variables:` section.
       export GITLAB_PASSWORD=$CI_BUILD_TOKEN
-      make lint
-      make test
       make push
-
-trigger:
-  stage: trigger
-  script:
-    - |
-      for TRIGGER in $(echo $TRIGGERS | tr [:space:] ' '); do
-        curl -fs -X POST -F ref=master -F token=${TRIGGER#*:} https://gitlab.com/api/v4/projects/${TRIGGER%:*}/trigger/pipeline > /dev/null
-      done

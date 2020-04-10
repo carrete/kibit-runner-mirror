@@ -1,0 +1,5 @@
+{:file-pattern #"\.(edn|clj[csx]?)$"
+ :insert-missing-whitespace? true
+ :insert-padding-lines? false
+ :remove-surrounding-whitespace? true
+ :remove-trailing-whitespace? true}

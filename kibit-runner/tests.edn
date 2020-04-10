@@ -1,5 +1,4 @@
 #kaocha/v1
 {:plugins [:kaocha.plugin/cloverage
            :noyoda.plugin/swap-actual-and-expected]
- :cloverage/opts
- {:fail-threshold #_"TODO: 100" 0}}
+ :cloverage/opts {:fail-threshold #_"TODO: 100" 0}}
