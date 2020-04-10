@@ -1,8 +1,9 @@
 (ns kibit-runner.cmdline
-  (:require [clojure.tools.cli :as tools-cli]
-            [kibit.driver :as kibit]
-            [kibit-runner.utils :refer [exit parse-paths printseq validate-paths]])
-  (:gen-class))
+  (:gen-class)
+  (:require
+    [clojure.tools.cli :as tools-cli]
+    [kibit-runner.utils :refer [exit parse-paths printseq validate-paths]]
+    [kibit.driver :as kibit]))
 
 #_(+ 1 1)
 

@@ -1,8 +1,10 @@
 (ns kibit-runner.utils
-  (:require [clojure.data.csv :as csv]
-            [clojure.java.io :as java-io]
-            [clojure.spec.alpha :as spec])
-  (:import java.io.File))
+  (:require
+    [clojure.data.csv :as csv]
+    [clojure.java.io :as java-io]
+    [clojure.spec.alpha :as spec])
+  (:import
+    java.io.File))
 
 (defn parse-paths
   [paths]
@@ -12,8 +14,8 @@
     []))
 
 (spec/fdef parse-paths
-  :args (spec/cat :paths string?)
-  :ret (spec/coll-of #(instance? File %) :kind seq? :min-count 0))
+           :args (spec/cat :paths string?)
+           :ret (spec/coll-of #(instance? File %) :kind seq? :min-count 0))
 
 (defn validate-paths
   [paths]

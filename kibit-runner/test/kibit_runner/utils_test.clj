@@ -1,11 +1,12 @@
 (ns kibit-runner.utils-test
-  (:require [clojure.spec.test.alpha :as spec-test]
-            [clojure.string :as string]
-            [clojure.test :refer [deftest is]]
-            [clojure.test.check :as test-check]
-            [clojure.test.check.generators :as gen]
-            [clojure.test.check.properties :as prop :include-macros true]
-            [kibit-runner.utils :as utils]))
+  (:require
+    [clojure.spec.test.alpha :as spec-test]
+    [clojure.string :as string]
+    [clojure.test :refer [deftest is]]
+    [clojure.test.check :as test-check]
+    [clojure.test.check.generators :as gen]
+    [clojure.test.check.properties :as prop]
+    [kibit-runner.utils :as utils]))
 
 (deftest test-parse-paths
   (is (= (utils/parse-paths nil) [])))
