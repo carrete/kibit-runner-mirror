@@ -1,11 +1,11 @@
-[![build status](https://gitlab.com/tvaughan/kibit-runner/badges/master/build.svg)](https://gitlab.com/tvaughan/kibit-runner/commits/master)
+# kibit-runner
 
 Quick Start
 ---
 
 Add:
 
-    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "0.2.3"}}
+    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "1.0.0"}}
             :main-opts ["-m" "kibit-runner.cmdline"]}
 
 to `:aliases` in `deps.edn`.
