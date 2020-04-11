@@ -25,8 +25,8 @@ include .starterkit.mk
 build: login
 	@docker build --pull --tag $(EXPLICIT_IMAGE) .
 
-.PHONY: lint test
-lint test: build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
+.PHONY: lint test publish
+lint test publish: is-repo-clean build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
 	@docker run --rm                                                        \
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"                        \
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"                        \
@@ -59,8 +59,10 @@ exec-%:
 	@docker exec --interactive --tty localhost make $*
 
 .PHONY: gitlab-runner-%
-gitlab-runner-%: is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
+gitlab-runner-%: is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD is-defined-GITLAB_USERNAME is-defined-GITLAB_PASSWORD
 	@gitlab-runner exec docker --docker-privileged                          \
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"                        \
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"                        \
+	    --env GITLAB_USERNAME="$(GITLAB_USERNAME)"                          \
+	    --env GITLAB_PASSWORD="$(GITLAB_PASSWORD)"                          \
 	    $*

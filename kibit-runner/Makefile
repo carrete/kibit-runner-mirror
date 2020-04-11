@@ -44,7 +44,7 @@ bump-pom: is-in-container
 	@clojure -Spom
 
 .PHONY: compile
-compile: bump-pom
+compile: is-in-container
 	@clojure -A:$@ dist/kibit-runner.jar
 
 .PHONY: publish

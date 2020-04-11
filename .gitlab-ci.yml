@@ -3,18 +3,17 @@ image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
 services:
   - docker:dind
 
-variables:
-  GITLAB_USERNAME: gitlab-ci-token
-
 stages:
   - check
   - push
+  - publish
 
 check:
   stage: check
   script:
     - | # TODO: Cannot use GitLab CI variables in `variables:` section.
-      export GITLAB_PASSWORD=$CI_BUILD_TOKEN
+      export GITLAB_USERNAME=${GITLAB_USERNAME:-gitlab-ci-token}
+      export GITLAB_PASSWORD=${GITLAB_PASSWORD:-$CI_BUILD_TOKEN}
       make lint
       make test
 
@@ -22,5 +21,16 @@ push:
   stage: push
   script:
     - | # TODO: Cannot use GitLab CI variables in `variables:` section.
-      export GITLAB_PASSWORD=$CI_BUILD_TOKEN
+      export GITLAB_USERNAME=${GITLAB_USERNAME:-gitlab-ci-token}
+      export GITLAB_PASSWORD=${GITLAB_PASSWORD:-$CI_BUILD_TOKEN}
       make push
+
+publish:
+  stage: publish
+  script:
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export GITLAB_USERNAME=${GITLAB_USERNAME:-gitlab-ci-token}
+      export GITLAB_PASSWORD=${GITLAB_PASSWORD:-$CI_BUILD_TOKEN}
+      make publish
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_TAG =~ /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/'
