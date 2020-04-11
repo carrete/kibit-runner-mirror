@@ -1,14 +1,16 @@
 # kibit-runner
+[![Clojars Project](https://img.shields.io/clojars/v/tvaughan/kibit-runner.svg)](https://clojars.org/tvaughan/kibit-runner)
 
 Quick Start
 ---
 
 Add:
 
-    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "1.0.0"}}
+    :kibit {:extra-deps {tvaughan/kibit-runner {:mvn/version "VERSION"}}
             :main-opts ["-m" "kibit-runner.cmdline"]}
 
-to `:aliases` in `deps.edn`.
+to `:aliases` in `deps.edn`. Use the latest version on Clojars indicated above
+in place of `VERSION`.
 
 Run:
 
