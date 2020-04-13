@@ -32,6 +32,15 @@ Or:
 
     clojure -A:kibit --paths src,test -- --replace --interactive
 
+Native Image
+---
+
+To build a native image, run:
+
+    make -f native-image.mk shell
+    make native-image
+    ./dist/kibit-runner
+
 Caveat Emptor
 ---
 
@@ -39,4 +48,4 @@ I came across https://github.com/jonase/kibit/issues/221 as I was replacing
 leiningen with deps.edn and the clojure command-line tools in
 [gitlab-api](https://gitlab.com/tvaughan/gitlab-api). While this library
 appears to do the trick, it would be better to incorporate it into kibit
-itself. Fingers crossed, this library will disappear someday.
+itself. Fingers crossed, kibit-runner will disappear someday.

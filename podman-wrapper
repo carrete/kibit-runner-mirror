@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+
+function has_command() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "$1 is required but was not found in \$PATH"
+    exit 1
+  fi
+}
+
+function main() {
+  has_command podman
+
+  PODMAN_ARGS=""
+
+  if [[ -n ${CI_JOB_ID:-} ]]; then
+    PODMAN_ARGS="--storage-driver=vfs $PODMAN_ARGS"
+  fi
+
+  case $(uname -o) in
+  Darwin)
+    has_command multipass
+
+    if [[ -z ${PODMAN_VM:-} ]]; then
+      echo "PODMAN_VM is not defined"
+      exit 1
+    fi
+
+    readonly IPV4_ADDR="$(multipass info "$PODMAN_VM" --format csv 2>/dev/null | grep "$PODMAN_VM" | cut -d, -f3)"
+
+    if [[ -z $IPV4_ADDR ]]; then
+      echo "The podman vm \"$PODMAN_VM\" has not been started"
+      exit 1
+    fi
+
+    PODMAN_ARGS="--remote --url ssh://ubuntu@${IPV4_ADDR}/run/user/1000/podman/podman.sock $PODMAN_ARGS"
+    ;;
+  Linux)
+    true
+    ;;
+  *)
+    echo "OS must be Darwin or Linux"
+    exit 1
+    ;;
+  esac
+
+  eval podman "$PODMAN_ARGS" "$@"
+}
+
+main "$@"

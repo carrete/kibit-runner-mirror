@@ -16,47 +16,51 @@ SYMBOLIC_REF := $(shell git rev-parse --abbrev-ref HEAD)
 EXPLICIT_IMAGE := $(FULL_IMAGE_PATH):$(GIT_REVISION)
 SYMBOLIC_IMAGE := $(FULL_IMAGE_PATH):$(SYMBOLIC_REF)
 
+PODMAN := $(HERE)/podman-wrapper
+SRCDIR := /opt/kibit-runner
+
 .PHONY: all
 all: lint test
 
 include .starterkit.mk
 
 .PHONY: build
-build: login
-	@docker build --pull --tag $(EXPLICIT_IMAGE) .
+build:
+	@$(PODMAN) build --pull --tag $(EXPLICIT_IMAGE) .
 
 .PHONY: lint test publish
 lint test publish: is-repo-clean build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
-	@docker run --rm                                                        \
+	@$(PODMAN) run --rm                                                     \
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"                        \
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"                        \
-	    --mount type=volume,src=kibit-runner-deps,dst=/root/.m2             \
+	    --volume kibit-runner-deps:/root/.m2                                \
 	    $(EXPLICIT_IMAGE)                                                   \
 	    make $@
 
 .PHONY: repl shell
 repl shell: build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
-	@docker run --rm                                                        \
-	    --interactive --tty --name localhost                                \
+	@$(PODMAN) run --rm                                                     \
+	    --interactive --tty --name kibit-runner                             \
 	    --env CLOJARS_USERNAME="$(CLOJARS_USERNAME)"                        \
 	    --env CLOJARS_PASSWORD="$(CLOJARS_PASSWORD)"                        \
-	    --mount type=bind,src="$(HERE)"/kibit-runner,dst=/opt/kibit-runner  \
-	    --mount type=volume,src=kibit-runner-deps,dst=/root/.m2             \
 	    --publish 5309:5309                                                 \
+	    --volume $(SRCDIR):/opt/kibit-runner                                \
+	    --volume kibit-runner-deps:/root/.m2                                \
 	    $(EXPLICIT_IMAGE)                                                   \
 	    make $@
 
 .PHONY: tag-image
 tag-image: is-repo-clean build
-	@docker tag $(EXPLICIT_IMAGE) $(SYMBOLIC_IMAGE)
+	@$(PODMAN) tag $(EXPLICIT_IMAGE) $(SYMBOLIC_IMAGE)
 
 .PHONY: push
-push: tag-image
-	@docker push $(FULL_IMAGE_PATH)
+push: tag-image login
+	@$(PODMAN) push $(EXPLICIT_IMAGE)
+	@$(PODMAN) push $(SYMBOLIC_IMAGE)
 
 .PHONY: exec-%
 exec-%:
-	@docker exec --interactive --tty localhost make $*
+	@$(PODMAN) exec --interactive --tty kibit-runner make $*
 
 .PHONY: gitlab-runner-%
 gitlab-runner-%: is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD is-defined-GITLAB_USERNAME is-defined-GITLAB_PASSWORD

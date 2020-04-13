@@ -6,6 +6,8 @@
   (:import
     java.io.File))
 
+(set! *warn-on-reflection* true)
+
 (defn parse-paths
   [paths]
   (if paths
@@ -19,7 +21,7 @@
 
 (defn validate-paths
   [paths]
-  (every? true? (for [path paths] (.exists path))))
+  (every? true? (for [path paths] (.exists ^File path))))
 
 (defn fseq
   [f seq]

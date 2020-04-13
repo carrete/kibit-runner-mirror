@@ -10,6 +10,10 @@ HERE := $(shell cd -P -- $(shell dirname -- $$0) && pwd -P)
 .PHONY: all
 all: lint test
 
+.PHONY: has-command-%
+has-command-%:
+	@$(if $(shell command -v $* 2> /dev/null),,$(error The command $* does not exist in PATH))
+
 .PHONY: is-defined-%
 is-defined-%:
 	@$(if $(value $*),,$(error The environment variable $* is undefined))
@@ -22,38 +26,64 @@ endef
 
 .PHONY: is-in-container
 is-in-container:
-	@$(if $(wildcard /.docker*),,$(error $(CONTAINER_REQUIRED_MESSAGE)))
+	@$(if $(shell ls /.dockerenv /run/.containerenv 2>/dev/null),,$(error $(CONTAINER_REQUIRED_MESSAGE)))
 
 .PHONY: shell
 shell: is-in-container
 	@bash --login
 
-.PHONY: repl test check-format format check-refactor refactor eastwood kondo
-repl test check-format format check-refactor refactor eastwood kondo: is-in-container
-	@clojure -A:test:cljstyle:$@
+.PHONY: repl test check-refactor refactor eastwood
+repl test check-refactor refactor eastwood: is-in-container
+	@clojure -M:koacha:user:$@
 
-.PHONY: joker
-joker: is-in-container
-	@joker --lint --working-dir .
+.PHONY: check-format
+check-format: is-in-container
+	@cljstyle check .
+
+.PHONY: format
+format: is-in-container
+	@cljstyle fix .
+
+.PHONY: clj-kondo
+clj-kondo: is-in-container
+	@clj-kondo --lint .
 
 .PHONY: lint
-lint: check-format check-refactor eastwood kondo joker
-
-.PHONY: bump-pom
-bump-pom: is-in-container
-	@clojure -Spom
+lint: check-format check-refactor eastwood clj-kondo
 
 .PHONY: compile
-compile: is-in-container
-	@clojure -A:$@ dist/kibit-runner.jar
+compile: pom.xml
+	@clojure -X:depstar:$@ :jar dist/kibit-runner.jar
+
+.PHONY: uberjar
+uberjar: pom.xml
+	@clojure -X:depstar:$@ :jar dist/kibit-runner-standalone.jar :aot true :main-class kibit-runner.cmdline
 
 .PHONY: publish
 publish: compile is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
-	@clojure -A:$@ deploy dist/kibit-runner.jar
+	@clojure -M:$@ deploy dist/kibit-runner.jar
+
+.PHONY: native-image
+native-image: has-command-native-image uberjar
+	@native-image                                                           \
+	  -jar dist/kibit-runner-standalone.jar                                 \
+	  dist/kibit-runner                                                     \
+	  --allow-incomplete-classpath                                          \
+	  --initialize-at-build-time                                            \
+	  --no-server                                                           \
+	  --report-unsupported-elements-at-runtime                              \
+	  -H:+ReportExceptionStackTraces                                        \
+	  -H:Name="kibit-runner"                                                \
+	&& true
 
 .PHONY: update-deps
 update-deps: is-in-container
-	@clojure -A:outdated --update
+	@clojure -M:outdated --upgrade --force
+
+pom.xml: is-in-container deps.edn
+	@clojure -Spom
+
+update-dependencies: update-deps pom.xml
 
 .PHONY: pprint
 pprint: is-in-container

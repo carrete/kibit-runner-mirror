@@ -1,3 +1,5 @@
+.git/
+kibit-runner/*.elc
 kibit-runner/.clj-kondo/.cache/
 kibit-runner/.cpcache/
 kibit-runner/.eastwood
