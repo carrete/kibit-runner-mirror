@@ -26,7 +26,19 @@ include .starterkit.mk
 
 .PHONY: build
 build:
-	@$(PODMAN) build --pull --tag $(EXPLICIT_IMAGE) .
+	@$(PODMAN) build --pull --tag $(EXPLICIT_IMAGE) --cache-from $(EXPLICIT_IMAGE) .
+
+.PHONY: export
+export: is-repo-clean build
+	@$(PODMAN) save -o kibit-runner-$(GIT_REVISION).tar $(EXPLICIT_IMAGE)
+
+.PHONY: import
+import:
+	@if [[ ! -f kibit-runner-$(GIT_REVISION).tar ]]; then                   \
+	    echo "kibit-runner-$(GIT_REVISION).tar does not exist";             \
+	    exit 1;                                                             \
+	fi
+	@$(PODMAN) load -i kibit-runner-$(GIT_REVISION).tar
 
 .PHONY: lint test publish
 lint test publish: is-repo-clean build is-defined-CLOJARS_USERNAME is-defined-CLOJARS_PASSWORD
